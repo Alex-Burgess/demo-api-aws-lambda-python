@@ -1,47 +1,40 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-    example-3
+    A demo serverless API project, with API gateway, Lambda with AWS Powertools, and DynamoDB.
 
-    Powertools example
-
-Globals: # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+Globals:
     Function:
         Timeout: 5
         MemorySize: 128
         Runtime: python3.12
 
 Resources:
-    HelloWorldFunction:
-        Type: AWS::Serverless::Function # More info about Function Resource: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    BooksFunction:
+        Type: AWS::Serverless::Function
         Properties:
             Handler: app.lambda_handler
-            CodeUri: hello_world
-            Description: Hello World function
+            CodeUri: src
+            Description: Books mono function
             Architectures:
                 - x86_64
             Tracing: Active
             Events:
-                HelloPath:
-                    Type: Api # More info about API Event Source: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-api.html
+                GetBooks:
+                    Type: Api
                     Properties:
                         Path: /books
                         Method: GET
-             # Powertools env vars: https://awslabs.github.io/aws-lambda-powertools-python/#environment-variables
             Environment:
                 Variables:
-                    POWERTOOLS_SERVICE_NAME: PowertoolsHelloWorld
+                    POWERTOOLS_SERVICE_NAME: PowertoolsBooks
                     POWERTOOLS_METRICS_NAMESPACE: Powertools
                     LOG_LEVEL: INFO
             Tags:
                 LambdaPowertools: python
 
 Outputs:
-    HelloWorldApi:
-      Description: "API Gateway endpoint URL for Prod environment for Hello World Function"
-      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
-
-    HelloWorldFunction:
-      Description: "Hello World Lambda Function ARN"
-      Value: !GetAtt HelloWorldFunction.Arn
+    BooksApi:
+      Description: "API Gateway endpoint URL for Prod environment"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/books"
 

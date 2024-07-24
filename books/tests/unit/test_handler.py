@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from hello_world import app
+from src import app
 
 def lambda_context():
     class LambdaContext:
@@ -99,7 +99,7 @@ def apigw_event():
       ]
    },
    "multiValueQueryStringParameters":"",
-   "path":"/hello",
+   "path":"/books",
    "pathParameters":"",
    "queryStringParameters":"",
    "requestContext":{
@@ -120,16 +120,16 @@ def apigw_event():
          "userAgent":"Custom User Agent String",
          "userArn":""
       },
-      "path":"/hello",
+      "path":"/books",
       "protocol":"HTTP/1.1",
       "requestId":"a3590457-cac2-4f10-8fc9-e47114bf7c62",
       "requestTime":"02/Feb/2023:11:45:26 +0000",
       "requestTimeEpoch":1675338326,
       "resourceId":"123456",
-      "resourcePath":"/hello",
+      "resourcePath":"/books",
       "stage":"Prod"
    },
-   "resource":"/hello",
+   "resource":"/books",
    "stageVariables":"",
    "version":"1.0"
 }

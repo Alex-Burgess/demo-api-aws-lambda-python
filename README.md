@@ -24,7 +24,7 @@
     ```
 1. Test:
     ```
-    curl http://127.0.0.1:3000/hello
+    curl http://127.0.0.1:3000/books
     ```
 
 
@@ -42,7 +42,7 @@
 - Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
 
 
-## Useful Commands
+## Useful Notes
 
 ### Manually Configure Local DynamoDB
 Pull Docker Image:
@@ -82,10 +82,6 @@ Active an environment:
 ```
 pyenv activate test_environment
 ```
-Install pip packages:
-```
-pip install -r requirements.txt
-```
 
 List all pythen environments:
 ```
@@ -101,3 +97,13 @@ Delete python environment:
 ```
 pyenv virtualenv-delete test_environment
 ```
+
+### Manage Python Packages
+Assumption is that packages will be installed in a virtual environment.
+
+Install pip packages:
+```
+pip install -r requirements.txt
+```
+
+Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Interpreter" and select the virtual environment.
