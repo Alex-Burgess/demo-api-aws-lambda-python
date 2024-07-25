@@ -4,7 +4,6 @@
 ## Get Started (local Dev)
 1. Start a local DynamoDB, with a table and test data:
     ```
-    printf "None\nNone\nlocal\njson\n" | aws configure
     docker compose up --detach
     ```
 1. Start python environment
@@ -20,7 +19,7 @@
     ```
 1. Run:
     ```
-    sam local start-api
+    sam local start-api --docker-network dynamodb-local-network
     ```
 1. Test:
     ```
@@ -37,23 +36,22 @@
     ```
     aws sso login --profile <Name>
     ```
+1. Deployment steps...
 
-## Implementation Notes
-- Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
-
+- [ ] Add deployment steps
 
 ## Useful Notes
 
-### Manually Configure Local DynamoDB
-Pull Docker Image:
-```
-docker run -p 8000:8000 amazon/dynamodb-local
-```
-Configure dummy AWS credentials
+### Create DynamoDB Table - Option 1
+- [ ] https://formulae.brew.sh/cask/nosql-workbench
+
+### Create DynamoDB Table - Option 2
+Note: To run these commands, dummy AWS credentials need to be configured.  Use:
 ```
 printf "None\nNone\nlocal\njson\n" | aws configure
 ```
-Create DynamoDB table
+
+Create DynamoDB table:
 ```
 aws dynamodb create-table --table-name Books --attribute-definitions AttributeName=id,AttributeType=S --key-schema AttributeName=id,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000
 ```
@@ -61,6 +59,13 @@ List tables:
 ```
 aws dynamodb list-tables --endpoint-url http://localhost:8000
 ```
+
+### Local Network Connectivity between DynamoDB and Lambda Function Containers
+- [ ] https://stackoverflow.com/questions/73557259/unable-to-connect-aws-sam-local-api-to-dynamodb-local-running-in-docker-instance
+
+### AWS PowerTools
+- [ ] Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
+
 
 ### Manage Python Virtual Environment
 See available python versions:
@@ -107,3 +112,8 @@ pip install -r requirements.txt
 ```
 
 Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Interpreter" and select the virtual environment.
+
+
+### VSCode Settings
+- Cloudformation linting
+- [ ] (Note working) Boto3 - https://marketplace.visualstudio.com/items?itemName=Boto3typed.boto3-ide, https://www.tecracer.com/blog/2022/05/enable-autocomplete-for-boto3-in-vscode.html
