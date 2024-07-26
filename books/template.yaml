@@ -8,10 +8,10 @@ Globals:
     Timeout: 10
 
 Resources:
-  HelloWorldFunction:
+  BooksFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: books/
+      CodeUri: src/
       Handler: app.lambda_handler
       Runtime: python3.12
       Architectures:
