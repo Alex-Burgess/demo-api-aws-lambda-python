@@ -47,18 +47,29 @@ def get_book(title):
         print(e)
         return { "statusCode": 500, "body": json.dumps({ "message": "Query for book failed" })}
 
-# def create_book():
-    # table = dynamodb.Table('Bookstore')
-    # table.put_item(
-    #     Item={
-    #         'title': 'New book',
-    #         'author': 'New author',
-    #         'category': 'Computing',
-    #     }
-    # )
-    # print('Created item')
+
+@app.post("/books")
+def create_book():
+    print(f"Creating new book")
+
+    book_data: dict = app.current_event.json_body  # deserialize json str to dict
+    print(f"Creating new book with title, {book_data['title']}")
+
+    try:
+        table = dynamodb.Table('Bookstore')
+
+        table.put_item(
+            Item={
+                'title': book_data['title'],
+                'author': book_data['author'],
+                'category': book_data['category'],
+            }
+        )
+        return { "statusCode": 200 }
+    except Exception as e:
+        print(e)
+        return { "statusCode": 500, "body": json.dumps({ "message": "Creating book failed" })}
 
 
 def lambda_handler(event, context):
-    # return get_book("The Pragmatic Programmer")
     return app.resolve(event, context)

@@ -131,3 +131,22 @@ Terminal 2:
 sam build
 curl http://127.0.0.1:3000/books
 ```
+
+### Testing
+Get a list of all books:
+```
+curl http://127.0.0.1:3000/books
+```
+
+Get a book by title:
+```
+curl http://127.0.0.1:3000/books/The%20Pragmatic%20Programmer
+```
+
+Create a book:
+```
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title":"Scrum","author":"Jeff Sutherland","category":"Agile"}' \
+  http://127.0.0.1:3000/books
+```

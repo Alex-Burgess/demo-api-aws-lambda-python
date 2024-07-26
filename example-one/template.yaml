@@ -27,6 +27,11 @@ Resources:
             Properties:
               Path: /books/{title}
               Method: get
+        CreateBook:
+          Type: Api
+          Properties:
+            Path: /books
+            Method: post
 
 Outputs:
   HelloWorldApi:
