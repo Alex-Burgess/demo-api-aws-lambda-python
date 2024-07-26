@@ -1,7 +1,32 @@
 # Demo API with AWS Lambda and Python
+This application demonstrates an API implementation using a serverless architecture model on AWS.  This includes how to use:
+
+- [AWS Serverless Application Model (SAM)](https://aws.amazon.com/serverless/sam/) to simplify the configuration and development of API services.
+- [Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/) developer toolkit to implement best practices.
+- [AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to implement CRUD operations against DynamoDB.
+- Docker to develop and test the API locally.
+- [ ] GitHub Actions to implement a CI/CD pipeline to deploy the API to AWS.
+- [ ] Integration with OpenAPI to make documentation
+- [ ] Unit and integration testing
+
+**Contents:**
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Database Operations](#database-operations)
+- [Best Practices]()
+- [Testing](#testing)
 
 
-## Get Started (local Dev)
+## Prerequisites
+The following tools are used to build and deploy the application:
+- [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+- [Python](https://www.python.org/downloads/) & [Pyenv](https://github.com/pyenv/pyenv)
+- [Docker](https://hub.docker.com/search/?type=edition&offering=community)
+- [NoSQL Workbench](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/workbench.html)
+
+
+## Getting Started
+
 1. Start a local DynamoDB, with a table and test data:
     ```
     docker compose up --detach
@@ -11,7 +36,7 @@
     pyenv install 3.12.1
     pyenv virtualenv 3.12.1 test_environment
     pyenv activate test_environment
-    pip install -r books/src/requirements.txt
+    pip install -r bboks/requirements.txt
     ```
 1. Build:
     ```
@@ -26,6 +51,31 @@
     curl http://127.0.0.1:3000/books
     ```
 
+
+## Database Operations
+Data model implementation.  PK and SK choices.  And additional indexes.
+
+## Best Practices
+Routing, Logging, tracing, metrics.
+
+## Testing
+Get a list of all books:
+```
+curl http://127.0.0.1:3000/books
+```
+
+Get a book by title:
+```
+curl http://127.0.0.1:3000/books/The%20Pragmatic%20Programmer
+```
+
+Create a book:
+```
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"title":"Scrum","author":"Jeff Sutherland","category":"Agile"}' \
+  http://127.0.0.1:3000/books
+```
 
 ## Deployment
 1. Export profile
@@ -67,54 +117,10 @@ aws dynamodb list-tables --endpoint-url http://localhost:8000
 - [ ] Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
 
 
-### Manage Python Virtual Environment
-See available python versions:
-```
-pyenv install -l
-```
-
-Install a new python version:
-```
-pyenv install 3.12.1
-```
-
-Create a new virtual environment:
-```
-pyenv virtualenv 3.12.1 test_environment
-```
-
-Active an environment:
-```
-pyenv activate test_environment
-```
-
-List all pythen environments:
-```
-pyenv virtualenvs
-```
-
-Deactivate python environment:
-```
-source deactivate
-```
-
-Delete python environment:
-```
-pyenv virtualenv-delete test_environment
-```
-
-### Manage Python Packages
-Assumption is that packages will be installed in a virtual environment.
-
-Install pip packages:
-```
-pip install -r requirements.txt
-```
-
-Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Interpreter" and select the virtual environment.
-
 
 ### VSCode Settings
+Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Interpreter" and select the virtual environment.
+
 - Cloudformation linting
 - [ ] (Note working) Boto3 - https://marketplace.visualstudio.com/items?itemName=Boto3typed.boto3-ide, https://www.tecracer.com/blog/2022/05/enable-autocomplete-for-boto3-in-vscode.html
 
@@ -130,23 +136,4 @@ Terminal 2:
 ```
 sam build
 curl http://127.0.0.1:3000/books
-```
-
-### Testing
-Get a list of all books:
-```
-curl http://127.0.0.1:3000/books
-```
-
-Get a book by title:
-```
-curl http://127.0.0.1:3000/books/The%20Pragmatic%20Programmer
-```
-
-Create a book:
-```
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"title":"Scrum","author":"Jeff Sutherland","category":"Agile"}' \
-  http://127.0.0.1:3000/books
 ```
