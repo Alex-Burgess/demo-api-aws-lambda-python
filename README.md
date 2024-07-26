@@ -117,3 +117,17 @@ Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Int
 ### VSCode Settings
 - Cloudformation linting
 - [ ] (Note working) Boto3 - https://marketplace.visualstudio.com/items?itemName=Boto3typed.boto3-ide, https://www.tecracer.com/blog/2022/05/enable-autocomplete-for-boto3-in-vscode.html
+
+### Developing Changes
+A good workflow is to have two terminals open.  One to run the local API, and another to run tests and rebuild after changes.
+
+Terminal 1:
+```
+sam local start-api --docker-network dynamodb-local-network
+```
+
+Terminal 2:
+```
+sam build
+curl http://127.0.0.1:3000/books
+```
