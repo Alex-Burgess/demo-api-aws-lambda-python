@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    A demo serverless API project, with API gateway, Lambda with AWS Powertools, and DynamoDB.
+
+Globals:
+    Function:
+        Timeout: 5
+        MemorySize: 128
+        Runtime: python3.12
+
+Resources:
+    BooksFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: app.lambda_handler
+            CodeUri: src
+            Description: Books mono function
+            Architectures:
+                - x86_64
+            Tracing: Active
+            Events:
+                GetBooks:
+                    Type: Api
+                    Properties:
+                        Path: /books
+                        Method: GET
+            Environment:
+                Variables:
+                    POWERTOOLS_SERVICE_NAME: PowertoolsBooks
+                    POWERTOOLS_METRICS_NAMESPACE: Powertools
+                    LOG_LEVEL: INFO
+            Tags:
+                LambdaPowertools: python
+
+Outputs:
+    BooksApi:
+      Description: "API Gateway endpoint URL for Prod environment"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/books"
+
