@@ -6,14 +6,14 @@ from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 app = APIGatewayRestResolver()
 
 dynamodb = boto3.resource('dynamodb', endpoint_url='http://dynamodb-local:8000')
-
+table = dynamodb.Table('Books')
 
 @app.get("/books")
 def get_books():
     print("All books were requested")
 
     try:
-        table = dynamodb.Table('Bookstore')
+        # table = dynamodb.Table('Books')
 
         response = table.get_item(
             Key={
@@ -34,7 +34,7 @@ def get_book(title):
     print(f"Book with title, {title}, was requested")
 
     try:
-        table = dynamodb.Table('Bookstore')
+        # table = dynamodb.Table('Books')
 
         response = table.query(
             KeyConditionExpression=Key('title').eq(title),
@@ -56,7 +56,7 @@ def create_book():
     print(f"Creating new book with title, {book_data['title']}")
 
     try:
-        table = dynamodb.Table('Bookstore')
+        # table = dynamodb.Table('Books')
 
         table.put_item(
             Item={
