@@ -17,23 +17,24 @@ Resources:
       Architectures:
         - x86_64
       Events:
-        GetBooks:
-          Type: Api
-          Properties:
-            Path: /books
-            Method: get
-        GetBook:
-            Type: Api
-            Properties:
-              Path: /books/{title}
-              Method: get
         CreateBook:
           Type: Api
           Properties:
             Path: /books
             Method: post
+        GetBook:
+          Type: Api
+          Properties:
+            Path: /books/{id}
+            Method: get
+
+  BooksTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: Books
+      
 
 Outputs:
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  BooksApi:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/books/"

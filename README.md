@@ -1,104 +1,119 @@
 # Demo API with AWS Lambda and Python
 This application demonstrates a simple CRUD API which manages a table of books using a serverless architecture model on AWS. This demonstrates the following concepts:
 
-- [AWS Serverless Application Model (SAM)](https://aws.amazon.com/serverless/sam/) to simplify the configuration and development of API services.
-- [Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/) developer toolkit to implement best practices.
-- [AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to implement CRUD operations against DynamoDB.
-- Docker to develop and test the API locally.
-- Integration with OpenAPI to make documentation
-- Unit and integration testing
-- GitHub Actions to implement a CI/CD pipeline to deploy the API to AWS.
-
-
-**Contents:**
-- [Prerequisites](#prerequisites)
-- [Getting Started](#getting-started)
+- [Essential Tools](#essential-tools)
+- [Initialising a New Project](#initialising-a-new-project)
 - [Best Practices with PowerTools](#best-practices-with-powertools)
-- [Developing the Application](#developing-the-application)
+- [DynamoDB CRUD Operations](#dynamodb-crud-operations)
+- [API Documentation](#api-documenation)
 - [Testing](#testing)
 - [Deployment](#deployment)
 
 
-## Prerequisites
+## Essential Tools
 The following tools are used to build and deploy the application:
-- [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 - [Python](https://www.python.org/downloads/) & [Pyenv](https://github.com/pyenv/pyenv)
 - [Docker](https://hub.docker.com/search/?type=edition&offering=community)
-- [NoSQL Workbench](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/workbench.html) installed from [Homebrew](https://formulae.brew.sh/cask/nosql-workbench)
+- [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) ([installation](https://formulae.brew.sh/formula/aws-sam-cli))
+- [NoSQL Workbench](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/workbench.html) ([installation](https://formulae.brew.sh/cask/nosql-workbench))
 
 
-## Getting Started
-- [ ] Follow steps to initialise project with AWS SAM...
-1. Start a local DynamoDB instance using the [Docker compose file](/compose.yaml):
-    ```
-    docker compose up --detach
-    ```
-1. Create table
-1. Create test data
+## Initialising a New Project
+[AWS Serverless Application Model (SAM)](https://aws.amazon.com/serverless/sam/) is used to simplify the configuration and development of serverless applications.  The [Hello World Tutorial](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html) is a useful guide for initialising a new project.  This command was used to initialise this project:
+```
+sam init --no-interactive \
+ --name books \
+ --runtime python3.12 \
+ --app-template hello-world \
+ --package-type Zip \
+ --dependency-manager pip
+```
+
+To run this project locally:
 1. Start python environment
     ```
     pyenv install 3.12.1
-    pyenv virtualenv 3.12.1 test_environment
-    pyenv activate test_environment
-    pip install -r bboks/requirements.txt
+    pyenv virtualenv 3.12.1 lambda-demo-app
+    pyenv activate lambda-demo-app
+    ```
+1. Install all the project dependencies:
+    ```
+    pip install -r books/requirements.txt
+    ```
+1. Start a local DynamoDB instance:
+    ```
+    docker compose up --detach
+    ```
+1. Create a table:
+    1. Open NoSQL Workbench, select `Data modeler`, then `import data model`, and select [Books.json](/Books.json).
+    1. Select `Visualizer`, then `Commit to Amazon DynamoDB` using a Local Connection.
+1. Add some test data:
+    1. Select `Operation builder`, then open `Local Connection`
+    1. Select the `Books` table, then `PartiQL editor` and enter the following statement:
+    ```
+    INSERT INTO "Books" value 
+    {
+        'id' : '978-1732102217',
+        'Title' : 'A Philosophy of Software Design, 2nd Edition',
+        'Authors': ['John Ousterhout'],
+        'IBAN': '978-1732102217',
+        'Category': 'Programming',
+        'Pages': 196
+    }
     ```
 1. Build:
     ```
+    cd books
     sam build
     ```
-1. Run:
+1. Run - note the `--docker-network` option with the same network name in the [compose.yaml](/compose.yaml) file, which ensures the two containers can reach other:
     ```
     sam local start-api --docker-network dynamodb-local-network
     ```
-1. Test:
+1. Test (in 2nd terminal):
     ```
-    curl http://127.0.0.1:3000/books
+    curl http://127.0.0.1:3000/books/978-1732102217
     ```
 
+When making code changes (i.e. not to the template), there is no need to stop/start the local API, you can just rebuild the changes in a 2nd terminal window and run the tests.
+```
+sam build
+curl http://127.0.0.1:3000/books/978-1732102217
+```
 
-## Best Practices with PowerTools
-- [ ] Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
-Routing, Logging, tracing, metrics.
-
-## Developing the Application
-
-
-### VSCode Settings
+## Configuring Prompts, Linting and Code Styling
+VSCode Settings:
 Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Interpreter" and select the virtual environment.
 
 - Cloudformation linting
 - [ ] (Note working) Boto3 - https://marketplace.visualstudio.com/items?itemName=Boto3typed.boto3-ide, https://www.tecracer.com/blog/2022/05/enable-autocomplete-for-boto3-in-vscode.html
 
-### Local Network Connectivity between DynamoDB and Lambda Function Containers
-- [ ] https://stackoverflow.com/questions/73557259/unable-to-connect-aws-sam-local-api-to-dynamodb-local-running-in-docker-instance
 
-### Developing Changes
-A good workflow is to have two terminals open.  One to run the local API, and another to run tests and rebuild after changes.
+## Best Practices with PowerTools
+[Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/) developer toolkit to implement best practices.
 
-Terminal 1:
-```
-sam local start-api --docker-network dynamodb-local-network
-```
+- [ ] Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
+Routing, Logging, tracing, metrics.
 
-Terminal 2:
-```
-sam build
-curl http://127.0.0.1:3000/books
-```
 
-### API Implementation
+## DynamoDB CRUD Operations
+[AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to implement CRUD operations against DynamoDB.
+
+- [ ] Notes on simple table CRUD operations.
+
+## API Documenation
+- [ ] OpenAPI spec
+- [ ] Errors
+
 - POST /books
 - GET /books/<id>
 - PUT /books/<id>
 - DELETE /books/<id>
 
-### DynamoDB Implementation
-- [ ] Notes on simple table CRUD operations.
-
-### API Documenation
-- [ ] OpenAPI spec
-
 ## Testing
+- [ ] Unit testing
+- [ ] Integration testing 
+
 Get a list of all books:
 ```
 curl http://127.0.0.1:3000/books
@@ -130,4 +145,4 @@ curl --header "Content-Type: application/json" \
 1. Deployment steps...
 
 - [ ] Add deployment steps
-- [ ] Github Actions pipeline
+- [ ] Github Actions CI/CD pipeline

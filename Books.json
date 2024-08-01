@@ -1,0 +1,15 @@
+{
+    "ModelName": "Books",
+    "DataModel": [
+      {
+        "TableName": "Books",
+        "KeyAttributes": {
+          "PartitionKey": {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        },
+        "BillingMode": "PAY_PER_REQUEST"
+      }
+    ]
+  }

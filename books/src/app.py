@@ -1,6 +1,6 @@
 import json
 import boto3
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.types import TypeDeserializer
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
 
 app = APIGatewayRestResolver()
@@ -8,41 +8,20 @@ app = APIGatewayRestResolver()
 dynamodb = boto3.resource('dynamodb', endpoint_url='http://dynamodb-local:8000')
 table = dynamodb.Table('Books')
 
-@app.get("/books")
-def get_books():
-    print("All books were requested")
+
+@app.get("/books/<id>")
+def get_book(id):
+    print(f"Book with id, {id}, was requested")
 
     try:
-        # table = dynamodb.Table('Books')
-
         response = table.get_item(
-            Key={
-                'title': 'The Pragmatic Programmer',
-                'author': 'David Thomas'
-            }
+            Key={ 'id': id }
         )
+
         item = response['Item']
         print(item)
-        return { "statusCode": 200, "body": json.dumps(item)}
-    except Exception as e:
-        print("Unexpected error: " + e)
-        return { "statusCode": 500, "body": json.dumps({ "message": "Listing all books failed" })}
 
-
-@app.get("/books/<title>")
-def get_book(title):
-    print(f"Book with title, {title}, was requested")
-
-    try:
-        # table = dynamodb.Table('Books')
-
-        response = table.query(
-            KeyConditionExpression=Key('title').eq(title),
-        )
-
-        items = response['Items']
-        print(items)
-        return { "statusCode": 200, "body": json.dumps(items)}
+        return { "statusCode": 200, "body": json.dumps(item, default=str)}
     except Exception as e:
         print(e)
         return { "statusCode": 500, "body": json.dumps({ "message": "Query for book failed" })}
@@ -56,8 +35,6 @@ def create_book():
     print(f"Creating new book with title, {book_data['title']}")
 
     try:
-        # table = dynamodb.Table('Books')
-
         table.put_item(
             Item={
                 'title': book_data['title'],
@@ -73,3 +50,11 @@ def create_book():
 
 def lambda_handler(event, context):
     return app.resolve(event, context)
+
+
+# def dynamo_to_python(dynamo_object: dict) -> dict:
+#     deserializer = TypeDeserializer()
+#     return {
+#         k: deserializer.deserialize(v) 
+#         for k, v in dynamo_object.items()
+#     }
