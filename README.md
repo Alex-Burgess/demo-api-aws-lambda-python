@@ -54,11 +54,11 @@ To run this project locally:
     INSERT INTO "Books" value 
     {
         'id' : '978-1732102217',
-        'Title' : 'A Philosophy of Software Design, 2nd Edition',
-        'Authors': ['John Ousterhout'],
+        'title' : 'A Philosophy of Software Design, 2nd Edition',
+        'authors': ['John Ousterhout'],
         'IBAN': '978-1732102217',
-        'Category': 'Programming',
-        'Pages': 196
+        'category': 'Programming',
+        'pages': 196
     }
     ```
 1. Build:
@@ -112,10 +112,9 @@ It would be cumbersome to have one lambda function for each API path.  The [REST
 
 The `return app.resolve(event, context)` line of the `lambda_handler` creates the [json response automatically](https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/#response-auto-serialization).
 
-The Event Handler also provides a way to easily [raise HTTP errors](https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/#raising-http-errors). The [app.py](/books/src/app.py) lambda function demonstrates how to return 400, 404, 500, etc error codes using the provided exceptions.
+The Event Handler also provides a way to easily [raise HTTP errors](https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/#raising-http-errors). The [app.py](/books/src/app.py) lambda function demonstrates how to return error codes using the provided exceptions.  **Note:** a 404 is returned for any unmatched route by default.
 
-Data validation...
-- Include pydantic in src/requirements.txt file.
+The Event Handler can be used to validate requests.  The (/books/src/app.py) lambda function demonstrates how to validate path parameters, as well as incoming json payloads by using the Book class.  **Note** pydantic must be included in the [src/requirements.txt](/books/src/requirements.txt) file.
 
 ### Logging
 

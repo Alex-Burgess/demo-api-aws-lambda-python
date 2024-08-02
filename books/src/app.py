@@ -1,8 +1,8 @@
 import json
 import boto3
-from boto3.dynamodb.types import TypeDeserializer
-
+from typing import Optional
 from pydantic import BaseModel, Field
+from boto3.dynamodb.types import TypeDeserializer
 
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver, Response, content_types
 from aws_lambda_powertools.event_handler.openapi.exceptions import RequestValidationError
@@ -12,9 +12,18 @@ from aws_lambda_powertools.event_handler.exceptions import (
 )
 
 app = APIGatewayRestResolver(enable_validation=True)
-
 dynamodb = boto3.resource('dynamodb', endpoint_url='http://dynamodb-local:8000')
 table = dynamodb.Table('Books')
+
+
+class Book(BaseModel):
+    id_: Optional[int] = Field(alias="id", default=None)
+    IBAN: str
+    title: str
+    authors: list[str]
+    category: str
+    pages: int
+
 
 @app.exception_handler(RequestValidationError)  
 def handle_validation_error(ex: RequestValidationError):
@@ -29,9 +38,9 @@ def handle_validation_error(ex: RequestValidationError):
 
 @app.get("/books/<id>")
 def get_book(id: str):
-    print(f"Book with id, {id}, was requested")
-
     try:
+        print(f"Request for book {id} was received")
+
         response = table.get_item(
             Key={ 'id': id }
         )
@@ -46,27 +55,26 @@ def get_book(id: str):
         item = response['Item']
         print(item)
 
-        return { "book": item }
+        return item
+
 
 @app.post("/books")
-def create_book():
-    print(f"Creating new book")
-
-    book_data: dict = app.current_event.json_body  # deserialize json str to dict
-    print(f"Creating new book with title, {book_data['title']}")
+def create_book(book: Book):
+    print(f"Request to create book was received")
 
     try:
+        book_data: dict = book.dict(by_alias=True)
+        book_data['id'] = book_data['IBAN'];
+        print(f"Creating new book with id, {book_data['IBAN']}")
+
         table.put_item(
-            Item={
-                'title': book_data['title'],
-                'author': book_data['author'],
-                'category': book_data['category'],
-            }
+            Item=book_data
         )
-        return { "statusCode": 200 }
+
+        return book_data['IBAN']
     except Exception as e:
         print(e)
-        return { "statusCode": 500, "body": json.dumps({ "message": "Creating book failed" })}
+        raise InternalServerError("There was an unexpected error")
 
 
 def lambda_handler(event, context):
