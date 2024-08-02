@@ -91,9 +91,11 @@ The [requirements.txt](/books/requirements.txt) installs some useful dependencie
 
 
 ## DynamoDB CRUD Operations
-[AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to implement CRUD operations against DynamoDB.
+The [AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) is used to implement CRUD operations against DynamoDB. There are two interfaces available to work with *client* and *resource*.  For this project the *resource* interface, which is the higher-level and hence simpler interface, was used.  See [Understanding the client and resource abstraction layers](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/programming-with-python.html#programming-with-python-client-resource) for further information. 
 
-- [ ] Notes on simple table CRUD operations.
+Below are useful reference guides:
+- [Boto3 - Table Resource docs](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb/table/index.html)
+- [Amazon DynamoDB examples](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html)
 
 ## Best Practices with PowerTools
 [Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/) developer toolkit to implement best practices.
