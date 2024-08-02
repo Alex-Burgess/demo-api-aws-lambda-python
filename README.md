@@ -3,9 +3,8 @@ This application demonstrates a simple CRUD API which manages a table of books u
 
 - [Essential Tools](#essential-tools)
 - [Initialising a New Project](#initialising-a-new-project)
-- [Best Practices with PowerTools](#best-practices-with-powertools)
 - [DynamoDB CRUD Operations](#dynamodb-crud-operations)
-- [API Documentation](#api-documenation)
+- [Best Practices with PowerTools](#best-practices-with-powertools)
 - [Testing](#testing)
 - [Deployment](#deployment)
 
@@ -89,19 +88,29 @@ Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Int
 - [ ] (Note working) Boto3 - https://marketplace.visualstudio.com/items?itemName=Boto3typed.boto3-ide, https://www.tecracer.com/blog/2022/05/enable-autocomplete-for-boto3-in-vscode.html
 
 
+## DynamoDB CRUD Operations
+[AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to implement CRUD operations against DynamoDB.
+
+- [ ] Notes on simple table CRUD operations.
+
 ## Best Practices with PowerTools
 [Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/) developer toolkit to implement best practices.
 
 - [ ] Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
 Routing, Logging, tracing, metrics.
 
+### Routing
+The `return app.resolve(event, context)` line serializes the json output.
 
-## DynamoDB CRUD Operations
-[AWS SDK for Python (boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) to implement CRUD operations against DynamoDB.
+### HTTP Errors
 
-- [ ] Notes on simple table CRUD operations.
 
-## API Documenation
+### Logging
+
+
+
+### API Documenation
+- [ ] See https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/#enabling-swaggerui
 - [ ] OpenAPI spec
 - [ ] Errors
 

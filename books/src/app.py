@@ -2,6 +2,9 @@ import json
 import boto3
 from boto3.dynamodb.types import TypeDeserializer
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver
+from aws_lambda_powertools.event_handler.exceptions import (
+    InternalServerError
+)
 
 app = APIGatewayRestResolver()
 
@@ -13,18 +16,23 @@ table = dynamodb.Table('Books')
 def get_book(id):
     print(f"Book with id, {id}, was requested")
 
+    # TODO : Validate ID is a number.  If it is not a number return a 400 with "The request is invalid"
+
     try:
         response = table.get_item(
             Key={ 'id': id }
         )
 
         item = response['Item']
+
+        # TODO : If no item is returned, return a 404 with message "no book found with book id: {id}""
+
         print(item)
 
-        return { "statusCode": 200, "body": json.dumps(item, default=str)}
+        return { "book": item }
     except Exception as e:
         print(e)
-        return { "statusCode": 500, "body": json.dumps({ "message": "Query for book failed" })}
+        raise InternalServerError("There was an unexpected error")
 
 
 @app.post("/books")
@@ -50,11 +58,3 @@ def create_book():
 
 def lambda_handler(event, context):
     return app.resolve(event, context)
-
-
-# def dynamo_to_python(dynamo_object: dict) -> dict:
-#     deserializer = TypeDeserializer()
-#     return {
-#         k: deserializer.deserialize(v) 
-#         for k, v in dynamo_object.items()
-#     }
