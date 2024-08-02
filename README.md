@@ -98,16 +98,24 @@ Below are useful reference guides:
 - [Amazon DynamoDB examples](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/dynamodb.html)
 
 ## Best Practices with PowerTools
-[Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/) developer toolkit to implement best practices.
+[Powertools for AWS Lambda (Python)](https://docs.powertools.aws.dev/lambda/python/latest/) is a developer toolkit to implement best practices, with many features that can be adopted independently.  Using the toolkit provides a similar experience to using a framework, reducing boiler plate and increasing developer velocity.  The [tutorial](https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial) is a good place to start to get a feel for the problems it solves.
 
-- [ ] Powertools for Event Routing (Reduce boiler plate), logging, etc. See https://docs.powertools.aws.dev/lambda/python/2.2.0/tutorial
-Routing, Logging, tracing, metrics.
 
-### Routing
-The `return app.resolve(event, context)` line serializes the json output.
+### API Event Handling (aka Routing)
+This application has the following routes:
+- POST /books
+- GET /books/<id>
+- PUT /books/<id>
+- DELETE /books/<id>
 
-### HTTP Errors
+It would be cumbersome to have one lambda function for each API path.  The [REST API Event Handler](https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/) provides a lightweight routing approach to handling requests for multiple URL paths/methods with one function.  The [app.py](/books/src/app.py) demonstrates this concept with one `lambda_handler` and specific function definitions for each route. 
 
+The `return app.resolve(event, context)` line of the `lambda_handler` creates the [json response automatically](https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/#response-auto-serialization).
+
+The Event Handler also provides a way to easily [raise HTTP errors](https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/#raising-http-errors). The [app.py](/books/src/app.py) lambda function demonstrates how to return 400, 404, 500, etc error codes using the provided exceptions.
+
+Data validation...
+- Include pydantic in src/requirements.txt file.
 
 ### Logging
 
@@ -118,10 +126,6 @@ The `return app.resolve(event, context)` line serializes the json output.
 - [ ] OpenAPI spec
 - [ ] Errors
 
-- POST /books
-- GET /books/<id>
-- PUT /books/<id>
-- DELETE /books/<id>
 
 ## Testing
 - [ ] Unit testing

@@ -1,39 +1,52 @@
 import json
 import boto3
 from boto3.dynamodb.types import TypeDeserializer
-from aws_lambda_powertools.event_handler import APIGatewayRestResolver
+
+from pydantic import BaseModel, Field
+
+from aws_lambda_powertools.event_handler import APIGatewayRestResolver, Response, content_types
+from aws_lambda_powertools.event_handler.openapi.exceptions import RequestValidationError
 from aws_lambda_powertools.event_handler.exceptions import (
-    InternalServerError
+    InternalServerError,
+    NotFoundError
 )
 
-app = APIGatewayRestResolver()
+app = APIGatewayRestResolver(enable_validation=True)
 
 dynamodb = boto3.resource('dynamodb', endpoint_url='http://dynamodb-local:8000')
 table = dynamodb.Table('Books')
 
+@app.exception_handler(RequestValidationError)  
+def handle_validation_error(ex: RequestValidationError):
+    # logger.error("Request failed validation", path=app.current_event.path, errors=ex.errors())
+
+    return Response(
+        status_code=400,
+        content_type=content_types.APPLICATION_JSON,
+        body="Invalid data",
+    )
+
 
 @app.get("/books/<id>")
-def get_book(id):
+def get_book(id: str):
     print(f"Book with id, {id}, was requested")
-
-    # TODO : Validate ID is a number.  If it is not a number return a 400 with "The request is invalid"
 
     try:
         response = table.get_item(
             Key={ 'id': id }
         )
-
-        item = response['Item']
-
-        # TODO : If no item is returned, return a 404 with message "no book found with book id: {id}""
-
-        print(item)
-
-        return { "book": item }
     except Exception as e:
         print(e)
         raise InternalServerError("There was an unexpected error")
 
+    if response.get('Item') is None:
+        print('No item was found')
+        raise NotFoundError
+    else:
+        item = response['Item']
+        print(item)
+
+        return { "book": item }
 
 @app.post("/books")
 def create_book():
