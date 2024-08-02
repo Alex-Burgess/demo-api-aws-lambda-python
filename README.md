@@ -3,6 +3,7 @@ This application demonstrates a simple CRUD API which manages a table of books u
 
 - [Essential Tools](#essential-tools)
 - [Initialising a New Project](#initialising-a-new-project)
+- [Dev Environment](#dev-environment)
 - [DynamoDB CRUD Operations](#dynamodb-crud-operations)
 - [Best Practices with PowerTools](#best-practices-with-powertools)
 - [Testing](#testing)
@@ -80,12 +81,13 @@ sam build
 curl http://127.0.0.1:3000/books/978-1732102217
 ```
 
-## Configuring Prompts, Linting and Code Styling
-VSCode Settings:
-Resolve packages: Use **Command + shift + P** shortcut, type "Python: Select Interpreter" and select the virtual environment.
+## Dev Environment
+At the beginning of starting this project we created a python virtual environment to ensure our project has an isolated environment with the dependencies it requires.  So that Visual Studio can resolve all the dependencies we need to switch the Interpreter it is using. Use **Command + shift + P** shortcut, type "Python: Select Interpreter" and select the virtual environment.
 
-- Cloudformation linting
-- [ ] (Note working) Boto3 - https://marketplace.visualstudio.com/items?itemName=Boto3typed.boto3-ide, https://www.tecracer.com/blog/2022/05/enable-autocomplete-for-boto3-in-vscode.html
+The [requirements.txt](/books/requirements.txt) installs some useful dependencies:
+- `cfn-lint`: to check template files for potential issues (Note: comment out the Runtime property of the [template.yaml](/books/template.yaml) file to check it is working). See [CloudFormation Linter](https://marketplace.visualstudio.com/items?itemName=kddejong.vscode-cfn-lint).
+- `boto3`: so that Visual Studio can resolve its dependencies when developing the code.
+- `boto3-stubs[essential]`: to provide type annotations for the boto3 API. See [boto3-stubs](https://pypi.org/project/boto3-stubs/).
 
 
 ## DynamoDB CRUD Operations
