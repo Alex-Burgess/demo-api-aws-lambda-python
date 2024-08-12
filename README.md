@@ -145,6 +145,8 @@ The [Logger](https://docs.powertools.aws.dev/lambda/python/latest/core/logger/) 
 - [ ] Unit testing
 - [ ] Integration testing 
 
+Postman collection: 
+
 Get a list of all books:
 ```
 curl http://127.0.0.1:3000/books
