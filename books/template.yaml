@@ -28,6 +28,10 @@ Resources:
           Properties:
             Path: /books/{id}
             Method: get
+      Environment:
+        Variables:
+          POWERTOOLS_SERVICE_NAME: books
+          POWERTOOLS_LOG_LEVEL: INFO
 
   BooksTable:
     Type: AWS::Serverless::SimpleTable

@@ -9,6 +9,14 @@ This application demonstrates a simple CRUD API which manages a table of books u
 - [Testing](#testing)
 - [Deployment](#deployment)
 
+TODO:
+- [ ] Create API documentation
+- [ ] Add unit tests around functions, including error scenarios.
+- [ ] Create integration test for happy path
+- [ ] Modify POST method to include Condition expression to prevent item being overwritten.
+- [ ] Add PUT API Method
+- [ ] Add DELETE API Method
+
 
 ## Essential Tools
 The following tools are used to build and deploy the application:
@@ -117,10 +125,17 @@ The Event Handler also provides a way to easily [raise HTTP errors](https://docs
 The Event Handler can be used to validate requests.  The (/books/src/app.py) lambda function demonstrates how to validate path parameters, as well as incoming json payloads by using the Book class.  **Note** pydantic must be included in the [src/requirements.txt](/books/src/requirements.txt) file.
 
 ### Logging
+The [app.py](/books/src/app.py) demonstrates how to implement PowerTools standardised approach to logging objects.  This shows the following:
+- How to setup the logger
+- How to log different levels
+- Configure the log level using an environment variable
+- How to log the context and include a Correlation ID.
 
-
+The [Logger](https://docs.powertools.aws.dev/lambda/python/latest/core/logger/) documentation provides further implementation details.
 
 ### API Documenation
+
+
 - [ ] See https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/#enabling-swaggerui
 - [ ] OpenAPI spec
 - [ ] Errors
@@ -147,7 +162,6 @@ curl --header "Content-Type: application/json" \
   --data '{"title":"Scrum","author":"Jeff Sutherland","category":"Agile"}' \
   http://127.0.0.1:3000/books
 ```
-
 
 ## Deployment
 1. Export profile
